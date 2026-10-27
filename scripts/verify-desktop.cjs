@@ -42,6 +42,7 @@ async function main() {
     await writeFile(credentialFile, JSON.stringify(legacy));
     const safeStorage = {
       isAsyncEncryptionAvailable: async () => true,
+      getSelectedStorageBackend: () => "gnome_libsecret",
       encryptStringAsync: async (value) => Buffer.from(`protected:${value}`),
       decryptStringAsync: async (buffer) => ({ result: buffer.toString().slice("protected:".length) }),
     };
@@ -68,6 +69,21 @@ async function main() {
     const reloaded = createChatGPTAuth({ userDataDir: directory, openExternal: async () => {}, safeStorage });
     assert.equal((await reloaded.status()).connected, true);
   } finally { await rm(directory, { recursive: true, force: true }); }
+
+  const fallbackDirectory = await mkdtemp(path.join(os.tmpdir(), "open-forensic-session-only-"));
+  try {
+    const credentialFile = path.join(fallbackDirectory, "chatgpt-auth.json");
+    const record = { hostId: "urn:uuid:test-host", activeClientId: "oaiapp_test", accounts: [{ clientId: "oaiapp_test", subject: "subject", scopes: ["chatgpt.tokens.use.direct"], accessToken: "access-secret", refreshToken: "refresh-secret", idToken: "id-secret", expiresAt: Date.now() + 3600000 }] };
+    await writeFile(credentialFile, JSON.stringify(record));
+    const unavailableStorage = { isAsyncEncryptionAvailable: async () => false };
+    const session = createChatGPTAuth({ userDataDir: fallbackDirectory, openExternal: async () => {}, safeStorage: unavailableStorage });
+    assert.equal((await session.status()).connected, true);
+    const onDisk = await readFile(credentialFile, "utf8");
+    assert.ok(!onDisk.includes("access-secret") && !onDisk.includes("refresh-secret") && !onDisk.includes("id-secret"));
+    assert.ok(!onDisk.includes("encryptedCredentials"));
+    const nextSession = createChatGPTAuth({ userDataDir: fallbackDirectory, openExternal: async () => {}, safeStorage: unavailableStorage });
+    assert.equal((await nextSession.status()).connected, false);
+  } finally { await rm(fallbackDirectory, { recursive: true, force: true }); }
   console.log("Desktop agent bridge checks passed.");
 }
 
