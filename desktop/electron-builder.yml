@@ -9,6 +9,10 @@ files:
   - desktop/chatgpt.cjs
   - out/**/*
   - package.json
+  - '!node_modules/@img/**'
+  - '!node_modules/sharp/**'
+  - '!node_modules/@next/**'
+  - '!node_modules/next/**'
 asar: true
 mac:
   category: public.app-category.finance
