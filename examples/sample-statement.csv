@@ -1,0 +1,12 @@
+Date,Description,Debit,Credit,Balance,Reference,Account,Currency
+2026-08-02,Client settlement received,0,105000,120000,SET-08,Operations 2048,USD
+2026-08-05,Supplier payments batch,190000,0,-70000,BATCH-08,Operations 2048,USD
+2026-08-08,Electronic transfer regional vendor,18000,0,-88000,TRF-08,Operations 2048,USD
+2026-08-08,IMTT transfer tax,470,0,-88470,TRF-08,Operations 2048,USD
+2026-08-11,Account service fee,750,0,-89220,FEE-08-A,Operations 2048,USD
+2026-08-11,Account service fee,750,0,-89970,FEE-08-B,Operations 2048,USD
+2026-08-15,Client invoice receipts,0,160000,70030,REC-08,Operations 2048,USD
+2026-08-16,Overdraft penalty fee,1150,0,68880,PEN-08,Operations 2048,USD
+2026-08-18,Payroll and contractor payments,135000,0,-66120,PAY-08,Operations 2048,USD
+2026-08-25,Debit interest charge,1550,0,-67670,INT-08,Operations 2048,USD
+2026-08-27,Sales settlement,0,50000,-17670,SALE-08,Operations 2048,USD
