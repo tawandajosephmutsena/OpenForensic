@@ -7,9 +7,13 @@ Open Forensic is a local-first financial forensics workspace for screening bank 
 
 ## Install
 
-Open the browser workspace over HTTPS and choose **Install app**. Browsers that support the install prompt can install it from that button; Safari and browsers without the prompt show the appropriate browser-menu instructions. The app can also run in a regular browser tab.
+Download the published [Open Forensic v0.1.0 release](https://github.com/tawandajosephmutsena/OpenForensic/releases/tag/v0.1.0):
 
-The repository includes an Electron desktop wrapper and a version-tagged GitHub Actions release workflow for a universal macOS DMG, Windows x64 one-click installer, and Linux x64 AppImage. Desktop binaries are not published or verified as release downloads yet. Build one locally with `pnpm desktop:mac`, `pnpm desktop:win`, or `pnpm desktop:linux` on the corresponding operating system. macOS distribution needs a Developer ID signature and notarization for a smooth direct-download install.
+- **Windows (x64):** [Open-Forensic-Setup.exe](https://github.com/tawandajosephmutsena/OpenForensic/releases/download/v0.1.0/Open-Forensic-Setup.exe) is the one-click installer.
+- **macOS (Apple silicon and Intel):** [Open-Forensic.dmg](https://github.com/tawandajosephmutsena/OpenForensic/releases/download/v0.1.0/Open-Forensic.dmg) is a universal build. It is currently unsigned and not notarized, so macOS may warn before opening it.
+- **Linux (x64):** Download [Open-Forensic.AppImage](https://github.com/tawandajosephmutsena/OpenForensic/releases/download/v0.1.0/Open-Forensic.AppImage), mark it executable, and run it.
+
+The [browser workspace](https://open-forensic-workspace.disruptiveholisticde.chatgpt.site) can run in a regular tab. Choose **Install app** there to install it from a supported browser; Safari and browsers without an install prompt show browser-menu instructions. Desktop ChatGPT sign-in remains a preview and has not yet been verified with a real account.
 
 ## Run locally
 
