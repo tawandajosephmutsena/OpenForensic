@@ -33,10 +33,10 @@ const categoryMeta: Record<
   FindingType,
   { label: string; color: string; lightColor: string }
 > = {
-  interest: { label: "Interest", color: "#a76c43", lightColor: "#f5eee8" },
-  tax: { label: "Tax & levy", color: "#bc9070", lightColor: "#f7f0e9" },
-  duplicate: { label: "Duplicate fees", color: "#57534e", lightColor: "#f1f0ee" },
-  penalty: { label: "Penalty fees", color: "#96918b", lightColor: "#f3f2f0" },
+  interest: { label: "Interest", color: "#E66A30", lightColor: "#FFF1E7" },
+  tax: { label: "Tax & levy", color: "#0A8E85", lightColor: "#E8F6F1" },
+  duplicate: { label: "Duplicate fees", color: "#29746C", lightColor: "#E5F3EF" },
+  penalty: { label: "Penalty fees", color: "#6AA99C", lightColor: "#EDF7F4" },
 };
 
 const categories: FindingType[] = ["interest", "tax", "duplicate", "penalty"];
@@ -73,7 +73,7 @@ function MetricCard({
   icon: Icon,
   emphasized = false,
   sparkline,
-  sparklineColor = "#a76c43",
+  sparklineColor = "#E66A30",
 }: {
   label: string;
   value: string;
@@ -193,7 +193,7 @@ export default function DashboardView({
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
           <div className="mb-2 flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#b98159]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#E66A30]" />
             Audit workspace
             <span className="text-zinc-300">/</span>
             Overview
@@ -217,7 +217,7 @@ export default function DashboardView({
           <button
             type="button"
             onClick={onOpenIngestion}
-            className="inline-flex h-9 items-center gap-2 rounded-lg bg-zinc-900 px-3.5 text-[12px] font-medium text-white shadow-[0_3px_8px_rgba(24,24,27,0.12)] transition-colors hover:bg-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600"
+            className="inline-flex h-9 items-center gap-2 rounded-lg bg-brand-teal px-3.5 text-[12px] font-medium text-white shadow-[0_3px_8px_rgba(24,24,27,0.12)] transition-colors hover:bg-[#076D68] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600"
           >
             <UploadSimple size={15} />
             Import statement
@@ -226,19 +226,19 @@ export default function DashboardView({
       </div>
 
       {workspace.isDemo && (
-        <div className="flex flex-col gap-2 rounded-lg border border-[#eadbcb] bg-[#fbf7f2] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2 rounded-lg border border-[#F6D7C2] bg-[#FFF8F2] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-2.5">
-            <span className="mt-0.5 flex h-5 w-5 items-center justify-center rounded bg-[#f0e6da]">
-              <ShieldCheck size={13} className="text-[#a36b45]" />
+            <span className="mt-0.5 flex h-5 w-5 items-center justify-center rounded bg-[#FFE5D3]">
+              <ShieldCheck size={13} className="text-[#D45E29]" />
             </span>
-            <p className="text-[12px] leading-5 text-[#72553f]">
+            <p className="text-[12px] leading-5 text-[#365F5A]">
               <span className="font-medium">Demonstration workspace.</span> These are synthetic transactions and findings for product exploration.
             </p>
           </div>
           <button
             type="button"
             onClick={onOpenIngestion}
-            className="ml-7 inline-flex items-center gap-1 whitespace-nowrap text-[11px] font-medium text-[#8e5b3a] hover:text-[#6f452c] sm:ml-0"
+            className="ml-7 inline-flex items-center gap-1 whitespace-nowrap text-[11px] font-medium text-[#BC5828] hover:text-[#9E401B] sm:ml-0"
           >
             Use your data <ArrowRight size={13} />
           </button>
@@ -246,9 +246,9 @@ export default function DashboardView({
       )}
 
       {!workspace.isDemo && !workspace.profileConfirmed && workspace.transactions.length > 0 && (
-        <div className="flex flex-col gap-2 rounded-lg border border-[#eadbcb] bg-[#fbf7f2] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[12px] leading-5 text-[#72553f]"><span className="font-medium">Audit profile needs review.</span> Apply verified account and tax assumptions before scanning this statement.</p>
-          <button type="button" onClick={() => onNavigate("rules")} className="inline-flex items-center gap-1 whitespace-nowrap text-[11px] font-medium text-[#8e5b3a] hover:text-[#6f452c]">Configure rules <ArrowRight size={13} /></button>
+        <div className="flex flex-col gap-2 rounded-lg border border-[#F6D7C2] bg-[#FFF8F2] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-[12px] leading-5 text-[#365F5A]"><span className="font-medium">Audit profile needs review.</span> Apply verified account and tax assumptions before scanning this statement.</p>
+          <button type="button" onClick={() => onNavigate("rules")} className="inline-flex items-center gap-1 whitespace-nowrap text-[11px] font-medium text-[#BC5828] hover:text-[#9E401B]">Configure rules <ArrowRight size={13} /></button>
         </div>
       )}
 
@@ -267,7 +267,7 @@ export default function DashboardView({
           detail="From findings marked confirmed"
           icon={CheckCircle}
           sparkline={data.months.map((month) => month.confirmedAmount)}
-          sparklineColor="#5F8065"
+          sparklineColor="#087E78"
         />
         <MetricCard
           label="Needs review"
@@ -300,9 +300,9 @@ export default function DashboardView({
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data.months} margin={{ top: 12, right: 4, bottom: 0, left: 4 }}>
                   <defs>
-                    <linearGradient id="ledgerguard-variance-fill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#a76c43" stopOpacity={0.18} />
-                      <stop offset="100%" stopColor="#a76c43" stopOpacity={0} />
+                    <linearGradient id="openforensic-variance-fill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#E66A30" stopOpacity={0.18} />
+                      <stop offset="100%" stopColor="#E66A30" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <XAxis
@@ -314,11 +314,11 @@ export default function DashboardView({
                   />
                   <YAxis hide domain={[0, (maximum: number) => Math.ceil(maximum * 1.15)]} />
                   <Tooltip
-                    cursor={{ stroke: "#d6d3d1", strokeWidth: 1, strokeDasharray: "3 4" }}
+                    cursor={{ stroke: "#C7DED7", strokeWidth: 1, strokeDasharray: "3 4" }}
                     content={(tooltip: unknown) => {
                       const { active, payload, label } = tooltip as { active?: boolean; payload?: readonly { value?: unknown }[]; label?: string };
                       return active && payload?.length ? (
-                        <div className="rounded-lg border border-white/10 bg-zinc-900/95 px-3 py-2.5 text-white shadow-xl backdrop-blur-sm">
+                        <div className="rounded-lg border border-white/10 bg-[#176F69]/95 px-3 py-2.5 text-white shadow-xl backdrop-blur-sm">
                           <div className="text-[10px] text-zinc-400">{label} · detected variance</div>
                           <div className="mt-1 text-[13px] font-medium tracking-tight">
                             {formatMoney(Number(payload[0].value ?? 0), workspace.currency)}
@@ -330,10 +330,10 @@ export default function DashboardView({
                   <Area
                     type="monotone"
                     dataKey="amount"
-                    stroke="#a76c43"
+                    stroke="#E66A30"
                     strokeWidth={2}
-                    fill="url(#ledgerguard-variance-fill)"
-                    activeDot={{ r: 4, fill: "#a76c43", stroke: "#fff", strokeWidth: 2 }}
+                    fill="url(#openforensic-variance-fill)"
+                    activeDot={{ r: 4, fill: "#E66A30", stroke: "#fff", strokeWidth: 2 }}
                     dot={false}
                     animationDuration={350}
                   />
@@ -442,7 +442,7 @@ export default function DashboardView({
                             ? "text-emerald-700"
                             : finding.status === "excluded"
                               ? "text-zinc-400"
-                              : "text-[#9b6b47]"
+                              : "text-[#C95D2C]"
                         }`}>
                           {finding.status === "needs-review"
                             ? "Needs review"
@@ -477,7 +477,7 @@ export default function DashboardView({
             <span className="font-mono text-[12px] font-medium text-zinc-600">{reviewProgress}%</span>
           </div>
           <div className="mt-7 h-1.5 overflow-hidden rounded-full bg-zinc-100">
-            <div className="h-full rounded-full bg-zinc-800 transition-[width] duration-300" style={{ width: `${reviewProgress}%` }} />
+            <div className="h-full rounded-full bg-brand-teal transition-[width] duration-300" style={{ width: `${reviewProgress}%` }} />
           </div>
           <div className="mt-3 flex justify-between text-[11px] text-zinc-400">
             <span>{data.reviewed} reviewed</span>
@@ -485,7 +485,7 @@ export default function DashboardView({
           </div>
           <div className="mt-7 space-y-4 border-t border-zinc-100 pt-5">
             <div className="flex items-center justify-between text-[11px]">
-              <div className="flex items-center gap-2 text-zinc-500"><Clock size={14} className="text-[#b98159]" /> Awaiting review</div>
+              <div className="flex items-center gap-2 text-zinc-500"><Clock size={14} className="text-[#E66A30]" /> Awaiting review</div>
               <span className="font-mono font-medium text-zinc-700">{data.needsReview}</span>
             </div>
             <div className="flex items-center justify-between text-[11px]">

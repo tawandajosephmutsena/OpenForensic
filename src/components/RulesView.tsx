@@ -225,7 +225,7 @@ export default function RulesView({ workspace, onApply }: RulesViewProps) {
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="mb-2 flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.18em] text-zinc-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#b98159]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#E66A30]" />
             Audit workspace <span className="text-zinc-300">/</span> Rules
           </div>
           <h1 className="text-[31px] font-medium tracking-[-0.055em] text-zinc-900 sm:text-[36px]">Audit rules</h1>
@@ -234,8 +234,8 @@ export default function RulesView({ workspace, onApply }: RulesViewProps) {
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap items-center gap-2">
-          {dirty && <span className="mr-1 text-[11px] text-[#9b6b47]">Unsaved changes</span>}
-          {!workspace.profileConfirmed && workspace.transactions.length > 0 && <span className="mr-1 text-[11px] text-[#9b6b47]">Audit not run</span>}
+          {dirty && <span className="mr-1 text-[11px] text-[#C95D2C]">Unsaved changes</span>}
+          {!workspace.profileConfirmed && workspace.transactions.length > 0 && <span className="mr-1 text-[11px] text-[#C95D2C]">Audit not run</span>}
           {showSaved && !dirty && <span className="mr-1 inline-flex items-center gap-1 text-[11px] text-emerald-700"><Check size={13} /> Applied locally</span>}
           <button
             type="button"
@@ -249,18 +249,18 @@ export default function RulesView({ workspace, onApply }: RulesViewProps) {
             type="button"
             onClick={applySettings}
             disabled={(!dirty && workspace.profileConfirmed) || !settings}
-            className="inline-flex h-9 items-center gap-2 rounded-lg bg-zinc-900 px-3.5 text-[12px] font-medium text-white shadow-[0_3px_8px_rgba(24,24,27,0.12)] transition-colors hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex h-9 items-center gap-2 rounded-lg bg-brand-teal px-3.5 text-[12px] font-medium text-white shadow-[0_3px_8px_rgba(24,24,27,0.12)] transition-colors hover:bg-[#076D68] disabled:cursor-not-allowed disabled:opacity-40"
           >
             <Check size={14} /> {workspace.profileConfirmed ? "Apply rules" : "Apply & run audit"}
           </button>
         </div>
       </div>
 
-      <div className="flex items-start gap-3 rounded-lg border border-[#eadbcb] bg-[#fbf7f2] px-4 py-3.5">
-        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-[#f0e6da]">
-          <ShieldCheck size={13} className="text-[#a36b45]" />
+      <div className="flex items-start gap-3 rounded-lg border border-[#F6D7C2] bg-[#FFF8F2] px-4 py-3.5">
+        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-[#FFE5D3]">
+          <ShieldCheck size={13} className="text-[#D45E29]" />
         </span>
-        <div className="text-[12px] leading-5 text-[#72553f]">
+        <div className="text-[12px] leading-5 text-[#365F5A]">
           <span className="font-medium">{workspace.isDemo ? "Illustrative demo profile." : workspace.profileConfirmed ? "Workspace screening profile." : "Review this profile before scanning."}</span>{" "}
           These inputs are assumptions, not legal or statutory defaults. Confirm rates, exemptions, thresholds and account terms before relying on any finding.
         </div>
@@ -326,7 +326,7 @@ export default function RulesView({ workspace, onApply }: RulesViewProps) {
                   onClick={() => updateField("interestMethod", method)}
                   className={`rounded-lg border px-3 py-2.5 text-left text-[11px] font-medium capitalize transition-colors ${
                     draft.interestMethod === method
-                      ? "border-zinc-800 bg-zinc-900 text-white"
+                      ? "border-brand-teal bg-brand-teal text-white"
                       : "border-zinc-200 bg-white text-zinc-500 hover:border-zinc-400"
                   }`}
                 >
@@ -346,7 +346,7 @@ export default function RulesView({ workspace, onApply }: RulesViewProps) {
                   onClick={() => updateField("dayBasis", basis)}
                   className={`rounded-lg border px-3 py-2.5 text-left text-[11px] font-medium transition-colors ${
                     draft.dayBasis === basis
-                      ? "border-zinc-800 bg-zinc-900 text-white"
+                      ? "border-brand-teal bg-brand-teal text-white"
                       : "border-zinc-200 bg-white text-zinc-500 hover:border-zinc-400"
                   }`}
                 >
@@ -453,23 +453,23 @@ export default function RulesView({ workspace, onApply }: RulesViewProps) {
           />
           <div className="mt-7 divide-y divide-zinc-100">
             <div className="flex gap-3 py-3 first:pt-0">
-              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#a76c43]" />
+              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#E66A30]" />
               <p className="text-[11px] leading-5 text-zinc-500"><span className="font-medium text-zinc-700">Interest.</span> Models negative balances between available statement dates using the selected rate and day basis.</p>
             </div>
             <div className="flex gap-3 py-3">
-              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#a76c43]" />
+              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#E66A30]" />
               <p className="text-[11px] leading-5 text-zinc-500"><span className="font-medium text-zinc-700">Tax.</span> Links a tax debit to a preceding transfer with the same reference, then applies the configured profile.</p>
             </div>
             <div className="flex gap-3 py-3">
-              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#a76c43]" />
+              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#E66A30]" />
               <p className="text-[11px] leading-5 text-zinc-500"><span className="font-medium text-zinc-700">Duplicate fees.</span> Flags matching fee amount and description within the selected day window.</p>
             </div>
             <div className="flex gap-3 py-3 last:pb-0">
-              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#a76c43]" />
+              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#E66A30]" />
               <p className="text-[11px] leading-5 text-zinc-500"><span className="font-medium text-zinc-700">Penalties.</span> Flags overdraft-related charges when the reconstructed pre-charge running balance is positive.</p>
             </div>
           </div>
-          <div className="mt-6 flex items-start gap-2 rounded-lg border border-[#eadbcb] bg-[#fbf7f2] p-3.5 text-[10px] leading-[17px] text-[#72553f]">
+          <div className="mt-6 flex items-start gap-2 rounded-lg border border-[#F6D7C2] bg-[#FFF8F2] p-3.5 text-[10px] leading-[17px] text-[#365F5A]">
             <WarningCircle size={15} className="mt-0.5 shrink-0" />
             <p>Screening can miss value dates, tariff exceptions, rate changes and unavailable transactions. Confirm each finding against the bank agreement and applicable law.</p>
           </div>

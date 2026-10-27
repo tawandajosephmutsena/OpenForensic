@@ -49,6 +49,7 @@ export interface AuditSettings {
 }
 
 export interface Workspace {
+  id: string;
   name: string;
   isDemo: boolean;
   profileConfirmed: boolean;

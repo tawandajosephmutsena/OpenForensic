@@ -1,0 +1,32 @@
+appId: com.openforensic.desktop
+productName: Open Forensic
+directories:
+  output: desktop-dist
+files:
+  - desktop/main.cjs
+  - desktop/preload.cjs
+  - desktop/agent.cjs
+  - desktop/chatgpt.cjs
+  - out/**/*
+  - package.json
+asar: true
+mac:
+  category: public.app-category.finance
+  icon: public/icon-512.png
+  target: dmg
+  artifactName: Open-Forensic.${ext}
+win:
+  icon: public/icon-512.png
+  target: nsis
+  artifactName: Open-Forensic-Setup.exe
+nsis:
+  oneClick: true
+  perMachine: false
+  allowElevation: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+linux:
+  category: Office
+  icon: public/icon-512.png
+  target: AppImage
+  artifactName: Open-Forensic.AppImage

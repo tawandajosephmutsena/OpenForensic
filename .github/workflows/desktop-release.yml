@@ -1,0 +1,70 @@
+name: Desktop release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-15
+            platform: mac
+            builder_args: --mac --universal
+            asset: Open-Forensic.dmg
+          - os: windows-2025
+            platform: windows
+            builder_args: --win --x64
+            asset: Open-Forensic-Setup.exe
+          - os: ubuntu-24.04
+            platform: linux
+            builder_args: --linux --x64
+            asset: Open-Forensic.AppImage
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.10.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: node -e "if (process.env.GITHUB_REF_NAME !== 'v' + require('./package.json').version) process.exit(1)"
+      - run: pnpm test:desktop
+      - run: pnpm export:app
+      - run: pnpm exec electron-builder --config desktop/electron-builder.yml ${{ matrix.builder_args }} --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: open-forensic-${{ matrix.platform }}
+          path: desktop-dist/${{ matrix.asset }}
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: open-forensic-*
+          path: release-assets
+          merge-multiple: true
+      - name: Publish installers
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          cd release-assets
+          sha256sum Open-Forensic.dmg Open-Forensic-Setup.exe Open-Forensic.AppImage > SHA256SUMS
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" * --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" * --title "Open Forensic $GITHUB_REF_NAME" --generate-notes
+          fi
