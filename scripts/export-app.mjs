@@ -7,8 +7,8 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const out = path.join(root, "out");
 const buildOutput = path.join(root, ".next-export");
-const pnpm = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
-const build = spawnSync(pnpm, ["exec", "next", "build"], {
+const nextCli = path.join(root, "node_modules", "next", "dist", "bin", "next");
+const build = spawnSync(process.execPath, [nextCli, "build"], {
   cwd: root,
   env: { ...process.env, OPEN_FORENSIC_STATIC_EXPORT: "1" },
   stdio: "inherit",
