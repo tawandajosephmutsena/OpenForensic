@@ -23,6 +23,8 @@ jobs:
       - run: pnpm test:audit
       - run: pnpm test:import
       - run: pnpm test:export
+      - run: pnpm test:agent
+      - run: pnpm test:desktop
       - run: pnpm typecheck
       - run: pnpm build
       - run: pnpm audit --prod --audit-level high

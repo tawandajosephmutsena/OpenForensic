@@ -5,17 +5,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        canvas: "#F7F7F6",
-        ink: "#242422",
-        bronze: "#9A6C45",
-        muted: "#777770",
+        canvas: "#F5FAF8",
+        ink: "#153A3B",
+        brand: { teal: "#087E78", orange: "#E66A30" },
+        muted: "#5D7472",
       },
       fontFamily: {
         sans: ["Inter", "Arial", "Helvetica", "sans-serif"],
         mono: ["IBM Plex Mono", "SFMono-Regular", "monospace"],
       },
       boxShadow: {
-        panel: "0 1px 3px rgba(18,18,18,.025), 0 8px 24px rgba(18,18,18,.035)",
+        panel: "0 1px 3px rgba(15,82,77,.035), 0 8px 24px rgba(15,82,77,.06)",
       },
     },
   },

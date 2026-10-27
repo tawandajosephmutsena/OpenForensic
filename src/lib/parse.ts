@@ -235,7 +235,7 @@ export function parseMoneyValue(raw: string): number | null {
 }
 
 function parseMt940Amount(raw: string): number | null {
-  // LedgerGuard reports two decimal places; reject finer MT940 precision instead of rounding it silently.
+  // Open Forensic reports two decimal places; reject finer MT940 precision instead of rounding it silently.
   if (/^\d+,\d{3,}$/.test(raw)) return null;
   if (/^\d+(?:,\d{1,2})?$/.test(raw)) {
     const amount = Number(raw.replace(",", "."));

@@ -1,7 +1,11 @@
 {
-  "name": "ledgerguard",
+  "name": "open-forensic",
   "version": "0.1.0",
+  "description": "A local-first financial forensics workspace",
+  "author": "Open Forensic contributors",
+  "license": "MIT",
   "private": true,
+  "main": "desktop/main.cjs",
   "packageManager": "pnpm@10.10.0",
   "scripts": {
     "dev": "next dev",
@@ -10,11 +14,20 @@
     "typecheck": "tsc --noEmit",
     "test:audit": "node scripts/verify-audit.cjs",
     "test:import": "node scripts/verify-import.cjs",
-    "test:export": "node scripts/verify-export.cjs"
+    "test:export": "node scripts/verify-export.cjs",
+    "test:agent": "node scripts/verify-agent.cjs",
+    "test:desktop": "node scripts/verify-desktop.cjs",
+    "export:app": "node scripts/export-app.mjs",
+    "desktop:dev": "electron .",
+    "desktop:pack": "pnpm export:app && electron-builder --config desktop/electron-builder.yml --dir --publish never",
+    "desktop:mac": "pnpm export:app && electron-builder --config desktop/electron-builder.yml --mac --universal --publish never",
+    "desktop:win": "pnpm export:app && electron-builder --config desktop/electron-builder.yml --win --x64 --publish never",
+    "desktop:linux": "pnpm export:app && electron-builder --config desktop/electron-builder.yml --linux --x64 --publish never"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
     "dexie": "^4.2.1",
+    "jose": "6.1.0",
     "jspdf": "^4.2.1",
     "next": "^16.0.0",
     "papaparse": "^5.5.3",
@@ -29,6 +42,8 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "autoprefixer": "^10.4.21",
+    "electron": "45.0.0",
+    "electron-builder": "26.18.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.18",
     "typescript": "^5.9.3"

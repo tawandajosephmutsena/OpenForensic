@@ -1,5 +1,6 @@
 import { analyzeTransactions, defaultSettings } from "./audit";
 import type { Transaction, Workspace } from "./types";
+import { createWorkspaceId } from "./workspace-id";
 
 const months = ["04", "05", "06", "07", "08", "09"];
 const taxCharges = [420, 470, 395, 535, 450, 510];
@@ -49,6 +50,7 @@ export function makeDemoWorkspace(): Workspace {
   for (const finding of findings) if (confirmedIds.has(finding.id)) finding.status = "confirmed";
 
   return {
+    id: createWorkspaceId(),
     name: "Operations audit",
     isDemo: true,
     profileConfirmed: true,
@@ -63,6 +65,7 @@ export function makeDemoWorkspace(): Workspace {
 
 export function makeEmptyWorkspace(): Workspace {
   return {
+    id: createWorkspaceId(),
     name: "New audit workspace",
     isDemo: false,
     profileConfirmed: false,

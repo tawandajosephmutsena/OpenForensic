@@ -1,5 +1,11 @@
 node_modules
 .next
+.next-export
+out
+desktop-dist
+app-site/
+marketing-site/
+.site-archives/
 .DS_Store
 *.tsbuildinfo
 .env*

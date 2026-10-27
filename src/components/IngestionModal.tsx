@@ -255,7 +255,7 @@ export default function IngestionModal({ open, onClose, onImport }: IngestionMod
             onDragOver={(event) => event.preventDefault()}
             onDragLeave={(event) => { event.preventDefault(); dragDepth.current = Math.max(0, dragDepth.current - 1); if (!dragDepth.current) setDragging(false); }}
             onDrop={handleDrop}
-            className={`relative rounded-xl border border-dashed px-6 py-7 text-center transition-all duration-200 ${dragging ? "scale-[1.005] border-zinc-900 bg-zinc-100 shadow-inner" : parsed ? "border-zinc-200 bg-zinc-50/60" : "border-zinc-300 bg-zinc-50/40 hover:border-zinc-400 hover:bg-zinc-50"}`}
+            className={`relative rounded-xl border border-dashed px-6 py-7 text-center transition-all duration-200 ${dragging ? "scale-[1.005] border-brand-teal bg-[#E9F7F1] shadow-inner" : parsed ? "border-zinc-200 bg-zinc-50/60" : "border-zinc-300 bg-zinc-50/40 hover:border-zinc-400 hover:bg-zinc-50"}`}
           >
             <div className={`mx-auto flex h-10 w-10 items-center justify-center rounded-lg border ${parsed ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-zinc-200 bg-white text-zinc-600"}`}>
               {parsed ? <CheckCircle size={19} weight="regular" /> : <UploadSimple size={19} weight="regular" />}
@@ -265,7 +265,7 @@ export default function IngestionModal({ open, onClose, onImport }: IngestionMod
             <button type="button" onClick={() => fileInput.current?.click()} className="mt-4 inline-flex h-8 items-center justify-center rounded-lg border border-zinc-200 bg-white px-3 text-[12px] font-medium text-zinc-700 shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition hover:border-zinc-300 hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-400">
               {parsed || file ? "Choose another file" : "Browse files"}
             </button>
-            {reading && <div className="mx-auto mt-5 max-w-[280px]" aria-live="polite"><div className="flex justify-between text-[11px] text-zinc-500"><span>Reading locally</span><span>{progress}%</span></div><div className="mt-1.5 h-1 overflow-hidden rounded-full bg-zinc-200"><div className="h-full rounded-full bg-zinc-800 transition-all duration-150" style={{ width: `${progress}%` }} /></div></div>}
+            {reading && <div className="mx-auto mt-5 max-w-[280px]" aria-live="polite"><div className="flex justify-between text-[11px] text-zinc-500"><span>Reading locally</span><span>{progress}%</span></div><div className="mt-1.5 h-1 overflow-hidden rounded-full bg-zinc-200"><div className="h-full rounded-full bg-brand-teal transition-all duration-150" style={{ width: `${progress}%` }} /></div></div>}
           </div>
 
           <div className="mt-3 flex items-start gap-1.5 text-[11px] text-zinc-500"><ShieldCheck size={14} className="mt-px shrink-0 text-emerald-600" /><span><span className="font-medium text-zinc-600">Browser-local processing</span> · No uploads. Normalized records save in this browser without app-level encryption; raw files are not retained.</span></div>
@@ -340,7 +340,7 @@ export default function IngestionModal({ open, onClose, onImport }: IngestionMod
 
         <footer className="flex items-center justify-between gap-4 border-t border-zinc-100 bg-white px-6 py-4 sm:px-8">
           <span className="min-w-0 truncate text-[11px] text-zinc-500">{parsed ? parsed.format === "MT940" ? `${rowCount.toLocaleString()} transaction${rowCount === 1 ? "" : "s"} ready for review` : mappedRows ? mappedRows.skippedRows && !exclusionsAcknowledged ? `${mappedRows.skippedRows.toLocaleString()} excluded row${mappedRows.skippedRows === 1 ? "" : "s"} need${mappedRows.skippedRows === 1 ? "s" : ""} review` : `${mappedRows.transactions.length.toLocaleString()} valid transaction${mappedRows.transactions.length === 1 ? "" : "s"} ready` : "Map columns to continue" : "Files are parsed entirely on this device"}</span>
-          <button type="button" disabled={!canImport || importing || reading} onClick={handleImport} className="inline-flex h-9 shrink-0 items-center gap-2 rounded-lg bg-zinc-900 px-3.5 text-[12px] font-medium text-white shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-zinc-200 disabled:text-zinc-400">
+          <button type="button" disabled={!canImport || importing || reading} onClick={handleImport} className="inline-flex h-9 shrink-0 items-center gap-2 rounded-lg bg-brand-teal px-3.5 text-[12px] font-medium text-white shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition hover:bg-[#076D68] focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-zinc-200 disabled:text-zinc-400">
             {importing ? "Importing…" : "Import statement"}<ArrowRight size={14} />
           </button>
         </footer>

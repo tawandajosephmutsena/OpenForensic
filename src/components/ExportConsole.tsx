@@ -34,7 +34,7 @@ function saveBlob(content: Blob, filename: string) {
 }
 
 function reportName(workspace: Workspace) {
-  return `ledgerguard-${workspace.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "audit"}`;
+  return `open-forensic-${workspace.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "audit"}`;
 }
 
 function wrapPdf(doc: import("jspdf").jsPDF, text: string, x: number, y: number, width: number, lineHeight = 5) {
@@ -89,7 +89,7 @@ export function ExportConsole({ workspace, onGoEvidence }: Props) {
         doc.setFont("helvetica", "normal");
         doc.setTextColor(125, 124, 118);
         doc.setFontSize(8);
-        doc.text("LEDGERGUARD  /  LOCAL AUDIT DRAFT", left, 284);
+        doc.text("OPEN FORENSIC  /  LOCAL AUDIT DRAFT", left, 284);
         doc.text(String(doc.getNumberOfPages()), right, 284, { align: "right" });
       };
       const nextPage = () => { pageFooter(); doc.addPage(); y = 22; };
@@ -111,17 +111,17 @@ export function ExportConsole({ workspace, onGoEvidence }: Props) {
           .reduce((count, value) => count + (doc.splitTextToSize(value, 160) as string[]).length, 0);
         return { description, amounts, height: 25 + lineCount * 4.5 };
       };
-      doc.setFillColor(31, 31, 29);
+      doc.setFillColor(8, 126, 120);
       doc.roundedRect(left, y, 9, 9, 2, 2, "F");
       doc.setTextColor(255, 255, 255);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(8);
-      doc.text("L", 24.5, y + 6, { align: "center" });
+      doc.text("O", 24.5, y + 6, { align: "center" });
       doc.setTextColor(39, 39, 36);
       doc.setFontSize(12);
-      doc.text("ledgerguard", 33, y + 6.5);
+      doc.text("Open Forensic", 33, y + 6.5);
       y += 25;
-      doc.setTextColor(137, 101, 70);
+      doc.setTextColor(230, 106, 48);
       doc.setFontSize(9);
       doc.text("FINANCIAL FORENSICS / REVIEW DRAFT", left, y);
       y += 15;
@@ -239,7 +239,7 @@ export function ExportConsole({ workspace, onGoEvidence }: Props) {
     <div className="space-y-6 pb-12">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-bronze">Output / 04</p>
+          <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-brand-orange">Output / 04</p>
           <h1 className="text-[29px] font-medium tracking-[-0.045em] text-zinc-900 sm:text-[34px]">Export &amp; communication</h1>
           <p className="mt-2 max-w-xl text-[13px] leading-6 text-zinc-500">Turn reviewed evidence into a clear schedule and a measured request for the bank to verify its calculations.</p>
         </div>
@@ -251,17 +251,17 @@ export function ExportConsole({ workspace, onGoEvidence }: Props) {
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.42fr)_minmax(300px,.9fr)]">
         <div className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-panel">
           <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-4">
-            <div className="flex items-center gap-2.5 text-[13px] font-medium text-zinc-800"><FilePdf size={17} className="text-bronze" /> Executive report preview</div>
+            <div className="flex items-center gap-2.5 text-[13px] font-medium text-zinc-800"><FilePdf size={17} className="text-brand-orange" /> Executive report preview</div>
             <span className="rounded-md border border-zinc-200 bg-zinc-50 px-2 py-1 font-mono text-[10px] text-zinc-500">PDF · A4</span>
           </div>
-          <div className="bg-[#F4F3F1] px-5 py-7 sm:px-9 sm:py-9">
+          <div className="bg-[#EAF6F1] px-5 py-7 sm:px-9 sm:py-9">
             <div className="mx-auto min-h-[520px] max-w-[520px] bg-white px-8 py-9 shadow-[0_10px_35px_rgba(34,32,28,.1)] sm:px-11 sm:py-11">
               <div className="flex items-center gap-2 border-b border-zinc-200 pb-5">
-                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-zinc-900 text-[12px] font-semibold text-white">L</span>
-                <span className="text-[14px] font-medium tracking-[-0.04em] text-zinc-900">ledgerguard</span>
+                <img src="/logo-mark.svg" alt="" width="28" height="28" className="h-7 w-7 rounded-md" />
+                <span className="text-[14px] font-semibold tracking-[-0.04em] text-[#153A3B]">Open Forensic</span>
                 <span className="ml-auto font-mono text-[9px] tracking-[0.1em] text-zinc-400">REVIEW DRAFT</span>
               </div>
-              <p className="mt-9 text-[10px] font-medium uppercase tracking-[0.16em] text-bronze">Financial forensics / audit schedule</p>
+              <p className="mt-9 text-[10px] font-medium uppercase tracking-[0.16em] text-brand-orange">Financial forensics / audit schedule</p>
               <h2 className="mt-3 text-[30px] font-medium leading-tight tracking-[-0.05em] text-zinc-900">Discrepancy<br />review</h2>
               <p className="mt-2 text-[12px] text-zinc-500">{workspace.name}</p>
               <div className="mt-10 grid grid-cols-2 gap-3 border-y border-zinc-200 py-5">
@@ -272,7 +272,7 @@ export function ExportConsole({ workspace, onGoEvidence }: Props) {
               <div className="mt-3 space-y-0 border-t border-zinc-100">
                 {totals.length ? totals.map(({ type, value }) => <div key={type} className="flex items-center justify-between border-b border-zinc-100 py-2.5 text-[11px]"><span className="text-zinc-500">{titleCase(type)}</span><span className="font-mono text-zinc-800">{formatMoney(value, workspace.currency)}</span></div>) : <p className="py-6 text-center text-[11px] text-zinc-400">Confirm findings to populate this report.</p>}
               </div>
-              <div className="mt-9 border-l-2 border-[#C6A784] pl-3 text-[10px] leading-5 text-zinc-500">Screening results based on configured rules. Verify agreements, value dates and applicable tax treatment before external use.</div>
+              <div className="mt-9 border-l-2 border-[#E66A30] pl-3 text-[10px] leading-5 text-zinc-500">Screening results based on configured rules. Verify agreements, value dates and applicable tax treatment before external use.</div>
             </div>
           </div>
         </div>
@@ -288,14 +288,14 @@ export function ExportConsole({ workspace, onGoEvidence }: Props) {
               <label className="mt-3 flex cursor-pointer items-center gap-2 text-[11px] text-zinc-500"><input type="checkbox" checked={includeCalculation} onChange={(event) => setIncludeCalculation(event.target.checked)} className="h-3.5 w-3.5 accent-zinc-900" />Include calculation notes</label>
             </div>
             <div className="space-y-2 border-t border-zinc-100 pt-5">
-              <button type="button" onClick={downloadPdf} disabled={!confirmed.length || pdfBusy} className={`${buttonBase} w-full bg-zinc-900 text-white hover:bg-zinc-800`}><FilePdf size={16} />{pdfBusy ? "Preparing PDF…" : "Download review PDF"}<ArrowDown size={14} className="ml-auto" /></button>
+              <button type="button" onClick={downloadPdf} disabled={!confirmed.length || pdfBusy} className={`${buttonBase} w-full bg-brand-teal text-white hover:bg-[#076D68]`}><FilePdf size={16} />{pdfBusy ? "Preparing PDF…" : "Download review PDF"}<ArrowDown size={14} className="ml-auto" /></button>
               <button type="button" onClick={downloadCsv} disabled={csvScope === "confirmed" ? !confirmed.length : !workspace.transactions.length} className={`${buttonBase} w-full border border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50`}><FileCsv size={16} />Export evidence CSV<DownloadSimple size={15} className="ml-auto" /></button>
             </div>
             <p className="mt-4 flex items-start gap-2 text-[11px] leading-5 text-zinc-400"><Info size={14} className="mt-0.5 shrink-0" />The PDF uses confirmed items. CSV follows the selected scope. Files are generated in this browser.</p>
             {exportError && <p role="alert" className="mt-3 text-[11px] leading-5 text-amber-800">{exportError}</p>}
           </div>
-          <div className="rounded-xl border border-zinc-200/80 bg-[#FDFCFB] p-6 shadow-panel">
-            <div className="flex items-center gap-2.5"><EnvelopeSimple size={17} className="text-bronze" /><h3 className="text-[14px] font-medium text-zinc-900">Bank communication</h3></div>
+          <div className="rounded-xl border border-zinc-200/80 bg-[#F7FCFA] p-6 shadow-panel">
+            <div className="flex items-center gap-2.5"><EnvelopeSimple size={17} className="text-brand-orange" /><h3 className="text-[14px] font-medium text-zinc-900">Bank communication</h3></div>
             <p className="mt-2 text-[12px] leading-5 text-zinc-500">A measured request for verification, ready to refine in your email client.</p>
             <div className="mt-5 grid grid-cols-2 gap-3">
               <label className="text-[10px] font-medium uppercase tracking-wider text-zinc-400">Bank name<input value={bankName} onChange={(event) => setBankName(event.target.value)} placeholder="Optional" className="mt-2 w-full rounded-md border border-zinc-200 bg-white px-3 py-2.5 text-[12px] font-normal normal-case tracking-normal text-zinc-800 outline-none focus:border-zinc-400" /></label>
@@ -308,9 +308,9 @@ export function ExportConsole({ workspace, onGoEvidence }: Props) {
             {customBody !== null && <button type="button" onClick={() => setCustomBody(null)} className="mt-2 text-[10px] font-medium text-zinc-500 underline decoration-zinc-300 underline-offset-2 hover:text-zinc-800">Reset generated text</button>}
             <div className="mt-4 flex gap-2">
               <button type="button" onClick={copyEmail} disabled={!confirmed.length} className={`${buttonBase} flex-1 border border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50`}>{copied ? <Check size={15} /> : <ClipboardText size={15} />}{copied ? "Copied" : "Copy draft"}</button>
-              <a aria-disabled={!confirmed.length} tabIndex={confirmed.length ? 0 : -1} href={confirmed.length ? `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}` : undefined} className={`${buttonBase} flex-1 bg-zinc-900 text-white hover:bg-zinc-800 ${confirmed.length ? "" : "pointer-events-none opacity-40"}`}><EnvelopeSimple size={15} />Open email</a>
+              <a aria-disabled={!confirmed.length} tabIndex={confirmed.length ? 0 : -1} href={confirmed.length ? `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}` : undefined} className={`${buttonBase} flex-1 bg-brand-teal text-white hover:bg-[#076D68] ${confirmed.length ? "" : "pointer-events-none opacity-40"}`}><EnvelopeSimple size={15} />Open email</a>
             </div>
-            <p className="mt-3 text-[10px] leading-4 text-zinc-400">Attach the exported report yourself. No message is sent by LedgerGuard.</p>
+            <p className="mt-3 text-[10px] leading-4 text-zinc-400">Attach the exported report yourself. No message is sent by Open Forensic.</p>
           </div>
         </div>
       </div>

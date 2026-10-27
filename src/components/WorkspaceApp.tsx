@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import {
   ArrowRight,
   CaretDown,
@@ -15,15 +16,17 @@ import {
   Plus,
   ShieldCheck,
   SlidersHorizontal,
+  Sparkle,
   SquaresFour,
   Table,
   UploadSimple,
   X,
 } from "@phosphor-icons/react";
 import DashboardView from "./DashboardView";
+import InstallAppButton from "./InstallAppButton";
 import { analyzeTransactions } from "@/lib/audit";
 import { makeDemoWorkspace, makeEmptyWorkspace } from "@/lib/demo";
-import { loadWorkspace, saveWorkspace } from "@/lib/storage";
+import { countWorkspaceDocuments, loadWorkspace, saveWorkspace } from "@/lib/storage";
 import type { AuditSettings, ReviewStatus, SourceFile, Transaction, ViewId, Workspace } from "@/lib/types";
 
 const StatementGrid = dynamic(() => import("./StatementGrid"));
@@ -83,12 +86,12 @@ function CommandPalette({ items, onClose }: { items: CommandItem[]; onClose: () 
 
   return (
     <div className="fixed inset-0 z-[80] flex items-start justify-center bg-zinc-950/40 px-4 pt-[13vh] backdrop-blur-[3px]" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
-      <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Command palette" onKeyDown={onDialogKeyDown} className="w-full max-w-[550px] overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-[0_26px_90px_rgba(20,20,20,.22)]">
-        <div className="flex items-center gap-3 border-b border-zinc-100 px-5 py-4"><MagnifyingGlass size={18} className="text-zinc-500" /><input ref={inputRef} aria-label="Search pages and actions" value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onKeyDown} placeholder="Search pages and actions…" className="w-full bg-transparent text-[14px] text-zinc-800 outline-none placeholder:text-zinc-500" /><kbd className="rounded border border-zinc-200 px-1.5 py-1 font-mono text-[10px] text-zinc-500">ESC</kbd></div>
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Command palette" onKeyDown={onDialogKeyDown} className="w-full max-w-[550px] overflow-hidden rounded-xl border border-[#C5E2D9] bg-white shadow-[0_26px_90px_rgba(14,84,79,.2)]">
+        <div className="flex items-center gap-3 border-b border-[#E2F0EB] px-5 py-4"><MagnifyingGlass size={18} className="text-brand-teal" /><input ref={inputRef} aria-label="Search pages and actions" value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onKeyDown} placeholder="Search pages and actions…" className="w-full bg-transparent text-[14px] text-ink outline-none placeholder:text-[#7DA39A]" /><kbd className="rounded border border-[#D1E4DD] px-1.5 py-1 font-mono text-[10px] text-[#6F938B]">ESC</kbd></div>
         <div className="max-h-[380px] overflow-y-auto p-2">
-          {filtered.length ? filtered.map((item, index) => <button key={item.id} type="button" onMouseEnter={() => setActive(index)} onClick={() => choose(item)} className={`flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left transition-colors ${index === active ? "bg-zinc-100" : "hover:bg-zinc-50"}`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-500"><item.icon size={16} /></span><span className="min-w-0"><span className="block text-[12px] font-medium text-zinc-800">{item.label}</span><span className="mt-0.5 block text-[11px] text-zinc-400">{item.detail}</span></span><ArrowRight size={14} className="ml-auto text-zinc-300" /></button>) : <div className="px-4 py-8 text-center text-[12px] text-zinc-400">No matching command</div>}
+          {filtered.length ? filtered.map((item, index) => <button key={item.id} type="button" onMouseEnter={() => setActive(index)} onClick={() => choose(item)} className={`flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left transition-colors ${index === active ? "bg-[#E9F7F1]" : "hover:bg-[#F5FAF8]"}`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-[#D1E4DD] bg-white text-brand-teal"><item.icon size={16} /></span><span className="min-w-0"><span className="block text-[12px] font-medium text-ink">{item.label}</span><span className="mt-0.5 block text-[11px] text-[#72958D]">{item.detail}</span></span><ArrowRight size={14} className="ml-auto text-[#8BB8AC]" /></button>) : <div className="px-4 py-8 text-center text-[12px] text-[#72958D]">No matching command</div>}
         </div>
-        <div className="flex items-center justify-between border-t border-zinc-100 px-5 py-3 text-[10px] text-zinc-400"><span>Use ↑ ↓ to navigate · ↵ to open</span><span>LedgerGuard command bar</span></div>
+        <div className="flex items-center justify-between border-t border-zinc-100 px-5 py-3 text-[10px] text-zinc-400"><span>Use ↑ ↓ to navigate · ↵ to open</span><span>Open Forensic command bar</span></div>
       </div>
     </div>
   );
@@ -148,7 +151,7 @@ export default function WorkspaceApp() {
   }, []);
 
   useEffect(() => {
-    document.title = `${viewLabels[view]} — LedgerGuard`;
+    document.title = `${viewLabels[view]} — Open Forensic`;
     if (hasNavigated.current) mainRef.current?.focus({ preventScroll: true });
     hasNavigated.current = true;
   }, [view]);
@@ -170,8 +173,8 @@ export default function WorkspaceApp() {
 
   const onSidebarKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
     if (!mobileMenuOpen || event.key !== "Tab") return;
-    const focusable = Array.from(sidebarRef.current?.querySelectorAll<HTMLButtonElement>("button:not([disabled])") ?? [])
-      .filter((button) => button.getClientRects().length > 0);
+    const focusable = Array.from(sidebarRef.current?.querySelectorAll<HTMLElement>("button:not([disabled]), a[href]") ?? [])
+      .filter((element) => element.getClientRects().length > 0);
     if (!focusable.length) return;
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
@@ -218,15 +221,23 @@ export default function WorkspaceApp() {
     commit((previous) => ({ ...previous, settings, profileConfirmed: true, findings: analyzeTransactions(previous.transactions, settings, previous.findings) }));
   }, [commit]);
 
-  const startEmptyWorkspace = () => {
-    if (workspace && !workspace.isDemo && workspace.transactions.length && !window.confirm("Start a new workspace? This will remove the current statements and findings from this browser.")) return;
+  const confirmWorkspaceReplacement = async (message: string) => {
+    const current = workspaceRef.current;
+    if (!current) return true;
+    const hasTransactions = !current.isDemo && current.transactions.length > 0;
+    const hasSavedDocuments = await countWorkspaceDocuments(current.id).then((count) => count > 0).catch(() => true);
+    return (!hasTransactions && !hasSavedDocuments) || window.confirm(message);
+  };
+
+  const startEmptyWorkspace = async () => {
+    if (!await confirmWorkspaceReplacement("Start a new workspace? This will remove the current statements and findings, and permanently delete any saved PDFs from this device.")) return;
     const next = makeEmptyWorkspace();
     commit(() => next);
     navigate("dashboard");
   };
 
-  const loadDemo = () => {
-    if (workspace && !workspace.isDemo && workspace.transactions.length && !window.confirm("Load the synthetic demo? This will replace the current local workspace.")) return;
+  const loadDemo = async () => {
+    if (!await confirmWorkspaceReplacement("Load the synthetic demo? This will replace the current statements and findings, and permanently delete any saved PDFs from this device.")) return;
     commit(() => makeDemoWorkspace());
     navigate("dashboard");
   };
@@ -260,30 +271,34 @@ export default function WorkspaceApp() {
 
   return (
     <div className="min-h-screen bg-canvas">
-      <a href="#main-content" tabIndex={mobileMenuOpen ? -1 : undefined} className="sr-only fixed left-4 top-3 z-[100] rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white focus:not-sr-only">Skip to main content</a>
+      <a href="#main-content" tabIndex={mobileMenuOpen ? -1 : undefined} className="sr-only fixed left-4 top-3 z-[100] rounded-md bg-brand-teal px-3 py-2 text-sm font-medium text-white focus:not-sr-only">Skip to main content</a>
       {mobileMenuOpen && <button type="button" tabIndex={-1} aria-hidden="true" className="fixed inset-0 z-30 bg-zinc-950/30 lg:hidden" onClick={closeMobileNavigation} />}
-      <aside id="workspace-navigation" ref={sidebarRef} role={mobileMenuOpen ? "dialog" : undefined} aria-modal={mobileMenuOpen || undefined} aria-label="Workspace navigation" onKeyDown={onSidebarKeyDown} className={`fixed bottom-3 left-3 top-3 z-40 flex w-[234px] flex-col rounded-xl border border-[#343430] bg-[#1D1D1B] text-zinc-300 shadow-[0_10px_35px_rgba(20,20,20,.15)] transition-transform duration-200 lg:bottom-4 lg:left-4 lg:top-4 ${mobileMenuOpen ? "visible translate-x-0" : "invisible -translate-x-[110%] lg:visible lg:translate-x-0"}`}>
-        <div className="border-b border-white/[.08] px-4 pb-4 pt-5">
-          <div className="flex items-center gap-2.5 px-1"><span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#A97852] text-white"><ShieldCheck size={18} weight="duotone" /></span><div><div className="text-[16px] font-medium leading-4 tracking-[-0.045em] text-white">ledgerguard</div><div className="mt-1 text-[9px] font-medium uppercase tracking-[0.18em] text-zinc-400">OPENFORENSIC</div></div><button ref={mobileCloseRef} type="button" aria-label="Close navigation" className="ml-auto text-zinc-300 lg:hidden" onClick={closeMobileNavigation}><X size={17} /></button></div>
-          <button type="button" onClick={() => setPaletteOpen(true)} className="mt-6 flex h-9 w-full items-center gap-2 rounded-lg border border-white/[.11] bg-white/[.045] px-2.5 text-left text-xs text-zinc-300 transition-colors hover:border-white/[.2] hover:bg-white/[.08]"><MagnifyingGlass size={14} /><span className="flex-1">Search pages and actions</span><kbd className="rounded border border-white/[.13] px-1.5 py-0.5 font-mono text-[9px] text-zinc-400">⌘ K</kbd></button>
+      <aside id="workspace-navigation" ref={sidebarRef} role={mobileMenuOpen ? "dialog" : undefined} aria-modal={mobileMenuOpen || undefined} aria-label="Workspace navigation" onKeyDown={onSidebarKeyDown} className={`fixed bottom-3 left-3 top-3 z-40 flex w-[244px] flex-col rounded-2xl border border-[#C9E5DD] bg-[#E9F6F2] text-[#285A57] shadow-[0_14px_40px_rgba(24,99,88,.11)] transition-transform duration-200 lg:bottom-4 lg:left-4 lg:top-4 ${mobileMenuOpen ? "visible translate-x-0" : "invisible -translate-x-[110%] lg:visible lg:translate-x-0"}`}>
+        <div className="border-b border-[#C9E5DD] px-4 pb-4 pt-5">
+          <div className="flex items-center gap-2.5 px-1"><img src="/logo-mark.svg" alt="" width="39" height="39" className="h-10 w-10 shrink-0 rounded-xl" /><div className="min-w-0"><div className="whitespace-nowrap text-[15px] font-semibold leading-5 tracking-[-0.045em] text-[#123F3D]">Open Forensic</div><div className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.16em] text-[#4F8D85]">Financial evidence workspace</div></div><button ref={mobileCloseRef} type="button" aria-label="Close navigation" className="ml-auto text-[#4F8D85] lg:hidden" onClick={closeMobileNavigation}><X size={17} /></button></div>
+          <button type="button" onClick={() => setPaletteOpen(true)} className="mt-6 flex h-9 w-full items-center gap-2 rounded-lg border border-[#C8E4DC] bg-white/80 px-2.5 text-left text-xs text-[#547F78] transition-colors hover:border-[#8CCBC0] hover:bg-white"><MagnifyingGlass size={14} /><span className="flex-1">Search pages and actions</span><kbd className="rounded border border-[#D7E9E3] px-1.5 py-0.5 font-mono text-[9px] text-[#6B9991]">⌘ K</kbd></button>
         </div>
 
         <div className="relative px-3 pt-5">
-          <p className="px-2 text-[10px] font-medium uppercase tracking-[.15em] text-zinc-400">CURRENT SPACE</p>
-          <button type="button" aria-expanded={workspaceMenuOpen} aria-controls="workspace-actions" onClick={() => setWorkspaceMenuOpen((open) => !open)} className="mt-2 flex w-full items-center gap-2.5 rounded-lg border border-white/[.09] bg-white/[.05] p-2.5 text-left hover:bg-white/[.08]"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#393530] text-[#c99a76]"><FolderOpen size={15} /></span><span className="min-w-0 flex-1"><span className="block truncate text-xs font-medium text-zinc-200">{workspace?.name ?? "Loading workspace"}</span><span className="mt-0.5 block text-[10px] text-zinc-400">{workspace?.isDemo ? "Synthetic demo" : "Browser local"}</span></span><CaretDown size={12} className="text-zinc-400" /></button>
-          {workspaceMenuOpen && <div id="workspace-actions" className="absolute left-3 right-3 top-[89px] z-50 rounded-lg border border-white/[.12] bg-[#2A2A28] p-1.5 shadow-2xl"><button type="button" onClick={renameWorkspace} className="block w-full rounded-md px-3 py-2 text-left text-xs text-zinc-200 hover:bg-white/[.08]">Rename workspace</button><button type="button" onClick={startEmptyWorkspace} className="block w-full rounded-md px-3 py-2 text-left text-xs text-zinc-200 hover:bg-white/[.08]">New empty workspace</button><button type="button" onClick={loadDemo} className="block w-full rounded-md px-3 py-2 text-left text-xs text-zinc-200 hover:bg-white/[.08]">Load synthetic demo</button></div>}
+          <p className="px-2 text-[10px] font-medium uppercase tracking-[.15em] text-[#62938B]">CURRENT SPACE</p>
+          <button type="button" aria-expanded={workspaceMenuOpen} aria-controls="workspace-actions" onClick={() => setWorkspaceMenuOpen((open) => !open)} className="mt-2 flex w-full items-center gap-2.5 rounded-lg border border-[#C8E4DC] bg-white/75 p-2.5 text-left hover:border-[#8CCBC0] hover:bg-white"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#D9F1E9] text-brand-teal"><FolderOpen size={15} /></span><span className="min-w-0 flex-1"><span className="block truncate text-xs font-medium text-[#1A4D4A]">{workspace?.name ?? "Loading workspace"}</span><span className="mt-0.5 block text-[10px] text-[#658C84]">{workspace?.isDemo ? "Synthetic demo" : "Browser local"}</span></span><CaretDown size={12} className="text-[#658C84]" /></button>
+          {workspaceMenuOpen && <div id="workspace-actions" className="absolute left-3 right-3 top-[89px] z-50 rounded-lg border border-[#B8DCD2] bg-white p-1.5 shadow-xl"><button type="button" onClick={renameWorkspace} className="block w-full rounded-md px-3 py-2 text-left text-xs text-[#285A57] hover:bg-[#E9F6F2]">Rename workspace</button><button type="button" onClick={startEmptyWorkspace} className="block w-full rounded-md px-3 py-2 text-left text-xs text-[#285A57] hover:bg-[#E9F6F2]">New empty workspace</button><button type="button" onClick={loadDemo} className="block w-full rounded-md px-3 py-2 text-left text-xs text-[#285A57] hover:bg-[#E9F6F2]">Load synthetic demo</button></div>}
         </div>
 
         <nav className="mt-5 flex-1 overflow-y-auto px-3 pb-5" aria-label="Main navigation">
-          {navGroups.map((group) => <div key={group.id} className="mb-5"><button type="button" onClick={() => setCollapsed((current) => ({ ...current, [group.id]: !current[group.id] }))} aria-expanded={!collapsed[group.id]} className="flex w-full items-center justify-between px-2 py-2 text-[10px] font-medium tracking-[.15em] text-zinc-400 hover:text-zinc-200"><span>{group.label}</span><CaretDown size={11} className={`transition-transform ${collapsed[group.id] ? "-rotate-90" : ""}`} /></button>{!collapsed[group.id] && <div className="mt-1 space-y-0.5">{group.items.map((item) => <button key={item.view} type="button" onClick={() => navigate(item.view)} aria-current={view === item.view ? "page" : undefined} className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-left text-xs font-medium transition-colors ${view === item.view ? "bg-white/[.1] text-white" : "text-zinc-300 hover:bg-white/[.055] hover:text-white"}`}><item.icon size={16} weight={view === item.view ? "duotone" : "regular"} /><span className="flex-1">{item.label}</span>{item.view === "evidence" && pendingCount > 0 && <span className="rounded bg-[#6B4C37] px-1.5 py-0.5 font-mono text-[10px] text-[#F4D9C2]">{pendingCount}</span>}{item.view === "exports" && confirmedCount > 0 && <span className="rounded bg-white/[.08] px-1.5 py-0.5 font-mono text-[10px] text-zinc-300">{confirmedCount}</span>}</button>)}</div>}</div>)}
-          <div className="mt-8 border-t border-white/[.08] pt-4"><button type="button" onClick={() => setIngestionOpen(true)} className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-xs font-medium text-zinc-300 hover:bg-white/[.06] hover:text-white"><Plus size={15} /> Add statement <ArrowRight size={13} className="ml-auto" /></button></div>
+          <Link href="/agent" className="mb-5 flex w-full items-center gap-2.5 rounded-xl bg-brand-teal px-3 py-3 text-left text-xs font-semibold text-white shadow-[0_5px_12px_rgba(8,126,120,.17)] transition-colors hover:bg-[#076D68]"><Sparkle size={17} weight="fill" className="text-[#FFD1AA]" /><span className="flex-1">AI assistant</span><ArrowRight size={14} /></Link>
+          {navGroups.map((group) => <div key={group.id} className="mb-5"><button type="button" onClick={() => setCollapsed((current) => ({ ...current, [group.id]: !current[group.id] }))} aria-expanded={!collapsed[group.id]} className="flex w-full items-center justify-between px-2 py-2 text-[10px] font-semibold tracking-[.15em] text-[#65958D] hover:text-brand-teal"><span>{group.label}</span><CaretDown size={11} className={`transition-transform ${collapsed[group.id] ? "-rotate-90" : ""}`} /></button>{!collapsed[group.id] && <div className="mt-1 space-y-0.5">{group.items.map((item) => <button key={item.view} type="button" onClick={() => navigate(item.view)} aria-current={view === item.view ? "page" : undefined} className={`flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-left text-xs font-medium transition-colors ${view === item.view ? "bg-white text-brand-teal shadow-[0_2px_8px_rgba(8,126,120,.08)]" : "text-[#32635D] hover:bg-white/65 hover:text-brand-teal"}`}><item.icon size={16} weight={view === item.view ? "duotone" : "regular"} /><span className="flex-1">{item.label}</span>{item.view === "evidence" && pendingCount > 0 && <span className="rounded bg-[#FFF0E6] px-1.5 py-0.5 font-mono text-[10px] text-[#BB5728]">{pendingCount}</span>}{item.view === "exports" && confirmedCount > 0 && <span className="rounded bg-[#D6EEE7] px-1.5 py-0.5 font-mono text-[10px] text-brand-teal">{confirmedCount}</span>}</button>)}</div>}</div>)}
+          <div className="mt-8 border-t border-[#C9E5DD] pt-4"><button type="button" onClick={() => setIngestionOpen(true)} className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-xs font-medium text-[#32635D] hover:bg-white/65 hover:text-brand-teal"><Plus size={15} /> Add statement <ArrowRight size={13} className="ml-auto" /></button></div>
         </nav>
 
-        <div className="m-3 rounded-lg border border-white/[.09] bg-white/[.045] p-3"><div className="flex items-center gap-2"><span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500/20" /><span className="relative h-2 w-2 rounded-full bg-emerald-500" /></span><span className="text-[11px] font-medium text-zinc-200">Local session</span><CheckCircle size={13} className="ml-auto text-emerald-500" /></div><p className="mt-2 text-[11px] leading-4 text-zinc-300">Statements are parsed and stored in this browser.</p></div>
+        <div className="m-3 rounded-xl border border-[#C9E5DD] bg-white/65 p-3"><div className="flex items-center gap-2"><span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full rounded-full bg-brand-teal/20" /><span className="relative h-2 w-2 rounded-full bg-brand-teal" /></span><span className="text-[11px] font-semibold text-[#245B56]">Local session</span><CheckCircle size={13} className="ml-auto text-brand-teal" /></div><p className="mt-2 text-[11px] leading-4 text-[#5C8D85]">Statements are parsed and stored in this browser.</p></div>
       </aside>
 
-      <div aria-hidden={mobileMenuOpen || undefined} className="min-w-0 lg:pl-[268px]">
-        <header className="sticky top-0 z-20 flex h-[65px] items-center justify-between border-b border-zinc-200/70 bg-canvas/95 px-5 backdrop-blur-md sm:px-8 lg:px-10"><div className="flex min-w-0 items-center gap-3"><button ref={mobileTriggerRef} type="button" aria-label="Open navigation" aria-controls="workspace-navigation" aria-expanded={mobileMenuOpen} className="rounded-md p-1 text-zinc-500 lg:hidden" onClick={openMobileNavigation}><List size={19} /></button><span className="hidden text-[11px] font-medium text-zinc-400 sm:inline">Workspace</span><span className="hidden text-zinc-300 sm:inline">/</span><span className="truncate text-[11px] font-medium text-zinc-800">{viewLabels[view]}</span></div><div className="flex items-center gap-2.5"><span className="hidden items-center gap-1.5 rounded-md border border-emerald-200/70 bg-emerald-50/60 px-2.5 py-1.5 text-[10px] font-medium text-emerald-700 sm:inline-flex"><ShieldCheck size={13} /> Browser local</span><button type="button" onClick={() => setPaletteOpen(true)} aria-label="Open command palette" className="flex h-8 w-8 items-center justify-center rounded-md border border-zinc-200 bg-white text-zinc-500 hover:text-zinc-800"><Command size={16} /></button><button type="button" onClick={() => setIngestionOpen(true)} className="inline-flex h-8 items-center gap-1.5 rounded-md bg-zinc-900 px-3 text-[11px] font-medium text-white hover:bg-zinc-700"><Plus size={14} /> <span className="hidden sm:inline">Import</span></button></div></header>
+      <div aria-hidden={mobileMenuOpen || undefined} className="min-w-0 lg:pl-[276px]">
+        <header className="sticky top-0 z-20 flex h-[65px] items-center justify-between border-b border-[#D9EAE5] bg-canvas/95 px-5 backdrop-blur-md sm:px-8 lg:px-10">
+          <div className="flex min-w-0 items-center gap-3"><button ref={mobileTriggerRef} type="button" aria-label="Open navigation" aria-controls="workspace-navigation" aria-expanded={mobileMenuOpen} className="rounded-md p-1 text-brand-teal lg:hidden" onClick={openMobileNavigation}><List size={19} /></button><span className="hidden text-[11px] font-medium text-[#7A9B95] sm:inline">Workspace</span><span className="hidden text-[#B7D2CA] sm:inline">/</span><span className="truncate text-[11px] font-semibold text-[#245B56]">{viewLabels[view]}</span></div>
+          <div className="flex items-center gap-2.5"><span className="hidden items-center gap-1.5 rounded-md border border-[#C7E8DD] bg-[#E9F7F1] px-2.5 py-1.5 text-[10px] font-medium text-brand-teal sm:inline-flex"><ShieldCheck size={13} /> Browser local</span><InstallAppButton className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#BBDED5] bg-white px-2.5 text-[0px] font-semibold text-brand-teal transition hover:border-brand-teal hover:bg-[#E9F7F1] sm:text-[11px]" /><Link href="/agent" aria-label="AI assistant" className="inline-flex h-8 items-center gap-1.5 rounded-md border border-[#BBDED5] bg-white px-2.5 text-[11px] font-semibold text-brand-teal transition hover:border-brand-teal hover:bg-[#E9F7F1]"><Sparkle size={14} /> <span className="hidden sm:inline">AI assistant</span></Link><button type="button" onClick={() => setPaletteOpen(true)} aria-label="Open command palette" className="flex h-8 w-8 items-center justify-center rounded-md border border-[#D1E4DD] bg-white text-[#5A8981] hover:text-brand-teal"><Command size={16} /></button><button type="button" onClick={() => setIngestionOpen(true)} aria-label="Import statement" className="inline-flex h-8 items-center gap-1.5 rounded-md bg-brand-orange px-3 text-[11px] font-semibold text-white transition hover:bg-[#CD5A27]"><Plus size={14} /> <span className="hidden sm:inline">Import</span></button></div>
+        </header>
         {storageError && <div role="status" className="mx-5 mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-[11px] text-amber-900 sm:mx-8 lg:mx-10">{storageError}</div>}
         <main id="main-content" ref={mainRef} tabIndex={-1} aria-label={viewLabels[view]} className="min-h-[calc(100vh-65px)] outline-none">
           {!workspace ? <div className="mx-auto max-w-[1500px] animate-pulse space-y-5 px-5 pt-9 sm:px-8 lg:px-10"><div className="h-10 w-52 rounded-md bg-zinc-200" /><div className="grid gap-3 sm:grid-cols-4">{[0, 1, 2, 3].map((value) => <div key={value} className="h-32 rounded-xl bg-zinc-200/70" />)}</div><div className="h-72 rounded-xl bg-zinc-200/70" /></div> : view === "dashboard" ? <DashboardView workspace={workspace} onOpenIngestion={() => setIngestionOpen(true)} onNavigate={navigate} /> : view === "rules" ? <RulesView workspace={workspace} onApply={onApplySettings} /> : <div className="mx-auto max-w-[1500px] px-5 pb-16 pt-8 sm:px-8 lg:px-10">{view === "evidence" ? <StatementGrid workspace={workspace} onStatusChange={onStatusChange} /> : <ExportConsole workspace={workspace} onGoEvidence={() => navigate("evidence")} />}</div>}

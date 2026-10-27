@@ -56,7 +56,7 @@ function rowStatus(findings: Finding[]): ReviewStatus | "clear" {
 
 function StatusPill({ status }: { status: ReviewStatus | "clear" }) {
   const styles: Record<ReviewStatus | "clear", string> = {
-    "needs-review": "border-amber-200/80 bg-amber-50 text-amber-800",
+    "needs-review": "border-amber-200/80 bg-amber-50 text-[#B94F20]",
     confirmed: "border-emerald-200/80 bg-emerald-50 text-emerald-700",
     excluded: "border-zinc-200 bg-zinc-100 text-zinc-500",
     clear: "border-zinc-200/70 bg-white text-zinc-400",
@@ -243,7 +243,7 @@ export default function StatementGrid({
                 type="button"
                 onClick={() => setCategory(item.value)}
                 aria-pressed={category === item.value}
-                className={`whitespace-nowrap rounded-md px-3 py-1.5 text-[11px] font-medium transition ${category === item.value ? "bg-zinc-900 text-white" : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"}`}
+                className={`whitespace-nowrap rounded-md px-3 py-1.5 text-[11px] font-medium transition ${category === item.value ? "bg-brand-teal text-white" : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"}`}
               >
                 {item.label}
               </button>
@@ -271,8 +271,8 @@ export default function StatementGrid({
                   <div><dt className="text-[10px] uppercase tracking-wide text-zinc-500">Credit</dt><dd className="mt-0.5 text-xs font-medium tabular-nums text-zinc-800">{transaction.credit ? money(transaction.credit, transaction.currency) : "—"}</dd></div>
                 </dl>
                 <div className="mt-3 flex items-center justify-between gap-3 text-xs">
-                  <span className="min-w-0 text-zinc-600">{primaryFinding ? <><span className="font-medium text-amber-800">{typeLabel[primaryFinding.type]}</span>{row.findings.length > 1 && <span className="ml-1 text-zinc-500">+{row.findings.length - 1}</span>}</> : "No finding"}</span>
-                  <span className={`shrink-0 font-mono font-medium tabular-nums ${row.findings.length ? "text-amber-800" : "text-zinc-400"}`}>{row.findings.length ? money(row.variance, transaction.currency) : "—"}</span>
+                  <span className="min-w-0 text-zinc-600">{primaryFinding ? <><span className="font-medium text-[#B94F20]">{typeLabel[primaryFinding.type]}</span>{row.findings.length > 1 && <span className="ml-1 text-zinc-500">+{row.findings.length - 1}</span>}</> : "No finding"}</span>
+                  <span className={`shrink-0 font-mono font-medium tabular-nums ${row.findings.length ? "text-[#B94F20]" : "text-zinc-400"}`}>{row.findings.length ? money(row.variance, transaction.currency) : "—"}</span>
                 </div>
                 <button type="button" onClick={() => setSelectedId(transaction.id)} aria-label={`View evidence for ${transaction.description}`} className="mt-3 flex w-full items-center justify-between border-t border-zinc-100 pt-3 text-xs font-medium text-zinc-800">
                   View evidence <ArrowRight size={14} aria-hidden="true" />
@@ -327,12 +327,12 @@ export default function StatementGrid({
                     <td className="px-3 py-3.5">
                       {primaryFinding ? (
                         <span className="inline-flex max-w-full items-center gap-1.5">
-                          <span className="truncate rounded-md border border-amber-200/70 bg-amber-50/70 px-2 py-1 text-[10px] font-medium text-amber-800">{typeLabel[primaryFinding.type]}</span>
+                          <span className="truncate rounded-md border border-amber-200/70 bg-amber-50/70 px-2 py-1 text-[10px] font-medium text-[#B94F20]">{typeLabel[primaryFinding.type]}</span>
                           {row.findings.length > 1 && <span className="text-[10px] text-zinc-400">+{row.findings.length - 1}</span>}
                         </span>
                       ) : <span className="text-[11px] text-zinc-300">No finding</span>}
                     </td>
-                    <td className={`whitespace-nowrap px-3 py-3.5 text-right text-[11px] font-medium tabular-nums ${row.findings.length ? "text-amber-800" : "text-zinc-300"}`}>
+                    <td className={`whitespace-nowrap px-3 py-3.5 text-right text-[11px] font-medium tabular-nums ${row.findings.length ? "text-[#B94F20]" : "text-zinc-300"}`}>
                       {row.findings.length ? money(row.variance, transaction.currency) : "—"}
                     </td>
                     <td className="px-3 py-3.5"><StatusPill status={rowStatus(row.findings)} /></td>
@@ -364,7 +364,7 @@ export default function StatementGrid({
       {selected && (
         <div className="fixed inset-0 z-50 flex justify-end" role="presentation">
           <button type="button" tabIndex={-1} aria-hidden="true" onClick={() => setSelectedId(null)} className="absolute inset-0 bg-zinc-950/25 backdrop-blur-[2px]" />
-          <aside ref={detailRef} role="dialog" aria-modal="true" aria-labelledby="evidence-detail-title" onKeyDown={onDetailKeyDown} className="relative flex h-full w-full max-w-[490px] flex-col border-l border-zinc-200 bg-[#FBFBFD] shadow-[-12px_0_40px_rgba(0,0,0,0.08)]">
+          <aside ref={detailRef} role="dialog" aria-modal="true" aria-labelledby="evidence-detail-title" onKeyDown={onDetailKeyDown} className="relative flex h-full w-full max-w-[490px] flex-col border-l border-zinc-200 bg-[#F5FAF8] shadow-[-12px_0_40px_rgba(0,0,0,0.08)]">
             <div className="flex items-start justify-between border-b border-zinc-200/80 bg-white px-6 py-5">
               <div>
                 <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-400">Transaction evidence</p>
@@ -423,7 +423,7 @@ export default function StatementGrid({
                         {finding.status === "needs-review" ? (
                           <>
                             <button type="button" onClick={() => onStatusChange(finding.id, "excluded")} className="inline-flex h-8 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3 text-[11px] font-medium text-zinc-600 hover:border-zinc-300 hover:text-zinc-900"><X size={12} />Exclude</button>
-                            <button type="button" onClick={() => onStatusChange(finding.id, "confirmed")} className="inline-flex h-8 items-center gap-1.5 rounded-md bg-zinc-900 px-3 text-[11px] font-medium text-white hover:bg-zinc-700"><Check size={12} />Confirm finding</button>
+                            <button type="button" onClick={() => onStatusChange(finding.id, "confirmed")} className="inline-flex h-8 items-center gap-1.5 rounded-md bg-brand-teal px-3 text-[11px] font-medium text-white hover:bg-[#076D68]"><Check size={12} />Confirm finding</button>
                           </>
                         ) : (
                           <button type="button" onClick={() => onStatusChange(finding.id, "needs-review")} className="inline-flex h-8 items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3 text-[11px] font-medium text-zinc-600 hover:border-zinc-300 hover:text-zinc-900"><ArrowCounterClockwise size={12} />Reopen review</button>
@@ -446,7 +446,7 @@ function Detail({ label, value, mono = false, emphasis = false }: { label: strin
   return (
     <div className="min-w-0">
       <dt className="text-[10px] text-zinc-400">{label}</dt>
-      <dd className={`mt-1 break-words text-[11px] ${mono ? "font-mono tabular-nums" : "font-medium"} ${emphasis ? "text-amber-800" : "text-zinc-700"}`}>{value}</dd>
+      <dd className={`mt-1 break-words text-[11px] ${mono ? "font-mono tabular-nums" : "font-medium"} ${emphasis ? "text-[#B94F20]" : "text-zinc-700"}`}>{value}</dd>
     </div>
   );
 }
